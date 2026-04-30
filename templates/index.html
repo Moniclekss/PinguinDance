@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PinguinDance Web</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Style.css') }}">
+</head>
+<body>
+    <h1>🐧 Bienvenido a PinguinDance 🐧</h1>
+    
+    
+    <div style="margin: 20px auto; max-width: 1000px; border: 5px solid #008080; border-radius: 10px; overflow: hidden;">
+        <img src="{{ url_for('video_feed') }}" alt="Transmisión PinguinDance" style="width: 100%; display: block;">
+    </div>
+    
+    <p>¡Copia los movimientos del pingüino!</p>
+</body>
+</html>
