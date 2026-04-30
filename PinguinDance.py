@@ -21,7 +21,6 @@ def cargar_frames_gif(ruta_gif, tamano):
         gif = Image.open(ruta_gif)
         for frame in range(0, gif.n_frames):
             gif.seek(frame)
-            # Convertir el frame a RGBA para mantener la transparencia
             img_rgba = gif.convert("RGBA").resize((tamano, tamano))
             # Convertir de formato Pillow a formato OpenCV (Numpy)
             img_cv = np.array(img_rgba)
