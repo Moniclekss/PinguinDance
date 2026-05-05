@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Contraseña - PinguinDance</title>
+    <!-- Vincula aquí tu CSS custom cuando lo tengas -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='Style.css') }}">
+</head>
+<body>
+    <div class="recover-container">
+        <h2>Recuperar Contraseña</h2>
+        <p>Ingresa tu correo y te enviaremos las instrucciones para restablecer tu contraseña.</p>
+        <form action="/recover" method="POST">
+            <div class="form-group">
+                <label for="email">Correo electrónico:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <button type="submit">Enviar instrucciones</button>
+        </form>
+        <div class="links">
+            <a href="/login">Volver al inicio de sesión</a>
+        </div>
+    </div>
+</body>
+</html>
