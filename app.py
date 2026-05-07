@@ -9,7 +9,8 @@ from modules.pose import generar_frames
 app = Flask (__name__)
 
 # Configuración de la base de datos MySQL (Docker)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:pinguin123@localhost:3306/pinguindance'
+db_host = os.environ.get('DB_HOST', 'localhost')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://admin:pinguin123@{db_host}:3306/pinguindance'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -90,4 +91,5 @@ def video_feed():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # El host="0.0.0.0" es CRUCIAL para que Docker permita que el navegador web entre al servidor
+    app.run(host='0.0.0.0', port=5000, debug=True)
