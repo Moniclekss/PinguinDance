@@ -6,7 +6,6 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* Fondo inspirado en hielo/noche antártica (vibras de Club Penguin) */
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     color: #e0f7fa;
     min-height: 100vh;
@@ -22,7 +21,7 @@ h1 {
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-/* Efecto "Cristal de Hielo" para los formularios */
+
 .login-container,
 .register-container,
 .recover-container {
@@ -85,7 +84,7 @@ h1 {
     box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
 }
 
-/* Botón con el clásico color Naranja de Pingüino */
+
 button {
     width: 100%;
     padding: 14px;
@@ -110,7 +109,7 @@ button:active {
     transform: translateY(1px);
 }
 
-/* Enlaces */
+
 .links {
     margin-top: 25px;
     text-align: center;

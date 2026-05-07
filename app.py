@@ -10,7 +10,9 @@ app = Flask (__name__)
 
 # Configuración de la base de datos MySQL (Docker)
 db_host = os.environ.get('DB_HOST', 'localhost')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://admin:pinguin123@{db_host}:3306/pinguindance'
+db_port = '3306' if db_host == 'db' else '3307'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://admin:pinguin123@{db_host}:{db_port}/pinguindance'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -27,7 +29,7 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index(actualizar_paraotravissta.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

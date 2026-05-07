@@ -1,21 +1,6 @@
 version: '3.8'
 
 services:
-  web:
-    build: .
-    container_name: pinguindance_web
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-    environment:
-      # Flask se conectará al servicio 'db' en lugar de 'localhost'
-      - DB_HOST=db
-    # IMPORTANTE: Conectar la cámara local a Docker en Windows es muy complejo.
-    # Esta línea funcionaría si usaras Linux nativo:
-    # devices:
-    #   - "/dev/video0:/dev/video0"
-
   db:
     image: mysql:8.0
     container_name: pinguindance_db
@@ -26,9 +11,22 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: pinguin123
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pinguindance_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: admin
+      PMA_PASSWORD: pinguin123
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
 
 volumes:
   db_data:
