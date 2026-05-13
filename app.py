@@ -1,12 +1,14 @@
-import os
+﻿import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 from flask import Flask, render_template, Response, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
 from modules.pose import generar_frames
 
-app = Flask (__name__)
+# Importar capas de nuestra arquitectura hexagonal
+from modules.infrastructure.mysql_adapter import db, MySQLUsuarioRepository
+from modules.application.auth_service import AuthService
+
+app = Flask(__name__)
 
 # Configuración de la base de datos MySQL (Docker)
 db_host = os.environ.get('DB_HOST', 'localhost')
@@ -14,18 +16,17 @@ db_port = '3306' if db_host == 'db' else '3307'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://admin:pinguin123@{db_host}:{db_port}/pinguindance'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 
-# Modelo de Usuario para la base de datos
-class Usuario(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+# Inicializar Base de Datos
+db.init_app(app)
 
 # Crear la base de datos si no existe
 with app.app_context():
     db.create_all()
+
+# Construcción de dependencias (Dependency Injection)
+usuario_repository = MySQLUsuarioRepository()
+auth_service = AuthService(usuario_repository)
 
 @app.route('/')
 def index():
@@ -38,11 +39,10 @@ def login():
         email = request.form['email']
         password = request.form['password']
         
-        # Buscar usuario en la base de datos
-        user = Usuario.query.filter_by(email=email).first()
+        # Validar credenciales usando la capa de Servicio o Aplicación
+        user = auth_service.autenticar_usuario(email, password)
         
-        if user and check_password_hash(user.password, password):
-            # Si es correcto, lo enviamos a la cámara
+        if user:
             return redirect(url_for('index'))
         else:
             error = 'Correo o contraseña incorrectos 👀'
@@ -59,39 +59,27 @@ def register():
         password = request.form['password']
         confirm_password = request.form['confirm_password']
         
-        # Validar que las contraseñas coincidan
         if password != confirm_password:
             error = "Las contraseñas no coinciden 🧊"
         else:
-            # Comprobar si el correo ya existe
-            existe = Usuario.query.filter_by(email=email).first()
-            if existe:
-                error = "El correo ya está registrado 🐧"
-            else:
-                # Encriptar contraseña por seguridad
-                hashed_pw = generate_password_hash(password)
-                nuevo_usuario = Usuario(username=username, email=email, password=hashed_pw)
-                
-                # Guardar en Base de Datos
-                db.session.add(nuevo_usuario)
-                db.session.commit()
+            try:
+                # Usar el servicio para crear el usuario, él maneja las reglas de negocio
+                auth_service.registrar_usuario(username, email, password)
                 success = "¡Cuenta creada con éxito! Ya puedes iniciar sesión."
+            except Exception as e:
+                error = "El correo ya está registrado 🐧"
                 
     return render_template('Regristrar.html', error=error, success=success)
 
 @app.route('/recover', methods=['GET', 'POST'])
 def recover():
     if request.method == 'POST':
-        # Aquí irá la lógica para enviar el correo de recuperación
         pass
     return render_template('Cambiar_Contra.html')
 
 @app.route('/video_feed')
 def video_feed():
-    # Retorna el video continuo usando el generador de OpenCV
     return Response(generar_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-
 if __name__ == '__main__':
-    # El host="0.0.0.0" es CRUCIAL para que Docker permita que el navegador web entre al servidor
     app.run(host='0.0.0.0', port=5000, debug=True)
