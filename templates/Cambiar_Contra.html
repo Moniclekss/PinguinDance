@@ -8,14 +8,32 @@
 </head>
 <body>
     <div class="recover-container">
-        <h2>Recuperar Contraseña</h2>
-        <p>Ingresa tu correo y te enviaremos las instrucciones para restablecer tu contraseña.</p>
+        <h2>Cambiar Contraseña</h2>
+        <p>Ingresa tu correo y tu nueva contraseña para actualizarla.</p>
+
+        <!-- Alertas de Flask -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}" style="color: white; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; margin-bottom: 15px;">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
         <form action="/recover" method="POST">
             <div class="form-group">
                 <label for="email">Correo electrónico:</label>
                 <input type="email" id="email" name="email" required>
             </div>
-            <button type="submit">Enviar instrucciones</button>
+            <div class="form-group">
+                <label for="password">Nueva contraseña:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirmar nueva contraseña:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit">Actualizar Contraseña</button>
         </form>
         <div class="links">
             <a href="/login">Volver al inicio de sesión</a>

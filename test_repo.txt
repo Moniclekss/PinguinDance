@@ -1,0 +1,22 @@
+class MySQLEmpleadoRepository(IEmpleadoRepository):
+    def guardar(self, emp: Empleado):
+        db_emp = EmpleadoModel(nombre=emp.nombre, email=emp.email, password=emp.password, cara_vector=emp.cara_vector, rol=emp.rol)
+        db.session.add(db_emp)
+        db.session.commit()
+        
+    def buscar_por_email(self, email: str) -> Empleado:
+        db_emp = EmpleadoModel.query.filter_by(email=email).first()
+        if db_emp:
+            return Empleado(id=db_emp.id, nombre=db_emp.nombre, email=db_emp.email, password=db_emp.password, cara_vector=db_emp.cara_vector, rol=db_emp.rol)
+        return None
+        
+    def obtener_todos(self):
+        db_emps = EmpleadoModel.query.all()
+        return [Empleado(id=e.id, nombre=e.nombre, email=e.email, password=e.password, cara_vector=e.cara_vector, rol=e.rol) for e in db_emps]
+        
+    def actualizar(self, emp: Empleado):
+        db_emp = EmpleadoModel.query.filter_by(email=emp.email).first()
+        if db_emp:
+            db_emp.password = emp.password
+            db_emp.cara_vector = emp.cara_vector
+            db.session.commit()

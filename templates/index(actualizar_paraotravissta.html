@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='Style.css') }}">
 </head>
 <body>
+    <div style="text-align: right; padding: 10px;">
+        <!-- Se muestra el usuario actual y el botón de cerrar sesión -->
+        <span style="color: white; font-weight: bold; margin-right: 15px;">Jugador: {{ session['usuario_username'] }}</span>
+        <a href="/logout" style="background:#ff4d4d; color:white; padding:10px 15px; text-decoration:none; border-radius:5px; font-weight:bold;">Cerrar Sesión</a>
+    </div>
+
     <h1>🐧 Bienvenido a PinguinDance 🐧</h1>
     
     
